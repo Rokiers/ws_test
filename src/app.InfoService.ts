@@ -12,6 +12,7 @@ export type InfoBrief = Prisma.OrderGetPayload<{select:typeof InfoBriefSelect}>
 @Injectable()
 export class InfoService{
     constructor(private prisma:PrismaService){}
+
     async getInfo():Promise<InfoBrief[]>{
         const user = await this.prisma.order.findMany({
             select:InfoBriefSelect,
@@ -22,5 +23,21 @@ export class InfoService{
             }
         });
         return user
+    }
+
+    async updateInfo(orderId:string,newStatus:string):Promise<boolean>{
+        try{
+            await this.prisma.order.update({
+                where:{
+                    id:orderId,
+                },
+                data:{
+                    status:newStatus
+                }
+            })
+            return true
+        }catch(e){
+            return false
+        }
     }
 }
